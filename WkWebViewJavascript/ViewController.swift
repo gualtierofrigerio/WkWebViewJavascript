@@ -32,7 +32,7 @@ class ViewController: UIViewController {
         let url = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "html")
         let request = URLRequest(url: url!)
         webViewHandler.load(request)
-        let functionString = "initPage(true)"
+        let functionString = "initPage(false)"
         webViewHandler.callJavascript(javascriptString: functionString) { (success, result) in
             if let result = result {
                 print(result)
@@ -44,6 +44,18 @@ class ViewController: UIViewController {
 extension ViewController: WebViewHandlerDelegate {
     func didReceiveMessage(message: Any) {
         print(message)
+        if let messageDictionary = message as? [String:AnyObject] {
+            if messageDictionary["parameter1"] != nil {
+                let functionName = "receiveJSON"
+                let object = ["parameter" : "value"]
+                if let objectString = ParametersHandler.getString(fromObject: object) {
+                    let functionString = functionName + "(" + objectString + ")"
+                    webViewHandler?.callJavascript(javascriptString: functionString, callback: { success,result in
+                        print(result)
+                    })
+                }
+            }
+        }
     }
     
     func didReceiveParameters(parameters: [String : Any]) {

@@ -5,7 +5,7 @@ function initPage(parameter) {
     if (parameter) {
         return "OK";
     }
-    return "KO";
+    return {"value" : "KO"};
 }
 
 function test(stringParameter, number, dictionary) {
@@ -14,8 +14,18 @@ function test(stringParameter, number, dictionary) {
     return "OK";
 }
 
+function receiveJSON(json) {
+    console.log("received json");
+    console.log(json);
+    return "OK";
+}
+
 function sendMessage() {
-    window.webkit.messageHandlers.nativeapp.postMessage({paramter1 : "value1", parameter2 : "value2"})
+    window.webkit.messageHandlers.nativeapp.postMessage({parameter1 : "value1", parameter2 : "value2"})
+}
+
+function sendMessageParameters() {
+    window.webkit.messageHandlers.nativeapp.postMessage("parameters?parameter1=100&parameter2=200&parameter3=abcd")
 }
 
 function sendParameters() {

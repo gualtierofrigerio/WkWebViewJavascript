@@ -135,7 +135,9 @@ extension WebViewHandler: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let url = navigationAction.request.url
-        if let parameters = ParametersHandler.decodeParameters(inString: url!.absoluteString) {
+        if let urlString = url?.absoluteString,
+            urlString.starts(with: messageName),
+            let parameters = ParametersHandler.decodeParameters(inString: url!.absoluteString) {
             delegate?.didReceiveParameters(parameters: parameters)
         }
         decisionHandler(.allow)
@@ -149,6 +151,11 @@ extension WebViewHandler: WKScriptMessageHandler {
         if message.name == messageName {
             if let body = message.body as? [String:AnyObject] {
                 delegate?.didReceiveMessage(message: body)
+            }
+            else if let body = message.body as? String {
+                if let parameters = ParametersHandler.decodeParameters(inString: body) {
+                    delegate?.didReceiveParameters(parameters: parameters)
+                }
             }
         }
     }

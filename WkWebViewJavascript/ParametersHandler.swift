@@ -11,9 +11,6 @@ import Foundation
 /// This class has only static function to encode and decode parameters
 /// from URLs and to enconde and decode JSON objects from strings
 class ParametersHandler {
-    static let urlPrefix = "nativeapp://"
-    
-    
     /// Decode the parameters in a string
     /// The function transforms the encoding characters so the string can be passed
     /// directly from an URL intercepted by a WebView
@@ -35,12 +32,9 @@ class ParametersHandler {
     /// - Parameter parametersString: the string containing the parameters to decode
     /// - Returns: An optional dictionary of [String:Any] with the parameters names and their values
     class func decodeParametersBase64(inString parametersString:String) -> [String:Any]? {
-        if parametersString.hasPrefix(urlPrefix) {
-            let str = parametersString.replacingOccurrences(of: urlPrefix, with: "")
-            if let decodedData = Data(base64Encoded: str),
-               let decodedString = String(data: decodedData, encoding: .utf8) {
-                return ParametersHandler.decodeParameters(inString: decodedString)
-            }
+        if let decodedData = Data(base64Encoded: parametersString),
+            let decodedString = String(data: decodedData, encoding: .utf8) {
+            return ParametersHandler.decodeParameters(inString: decodedString)
         }
         return nil
     }
